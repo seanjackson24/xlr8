@@ -1,45 +1,45 @@
 import { Result, Context } from "./parser";
 import { map, sequence, str, many, any, regex, optional, Mid, mid } from "./tokens";
 
-type ExcelExpr = Eval | string;
+export type ExcelExpr = Eval | string;
 
-interface FnCall {
+export interface FnCall {
   target: string;
   args: Expression[];
 }
-interface Eval {
+export interface Eval {
   expr: Expression;
 }
-type Expression = FnCall | CellToCelRef | EntireColumnRef | CellRef | Calc | Val;
-type Val = string;
-interface Calc {
+export type Expression = FnCall | CellToCellRef | EntireColumnRef | CellRef | Calc | Val;
+export type Val = string;
+export interface Calc {
   symbol: string;
   left: Expression;
   right: Expression;
 }
-interface SheetRef {
+export interface SheetRef {
   sheetName: string;
 }
-interface CellRef {
+export interface CellRef {
   sheetRef: SheetRef | null;
   colAnchored: boolean;
   colRef: ColRef;
   rowAnchored: boolean;
   rowRef: RowRef;
 }
-interface CellToCelRef {
+export interface CellToCellRef {
   startCell: CellRef;
   endCell: CellRef;
 }
-interface EntireColumnRef {
+export interface EntireColumnRef {
   sheetRef: SheetRef | null;
   startColumn: string;
   endColumn: string;
 }
-interface ColRef {
+export interface ColRef {
   column: string;
 }
-interface RowRef {
+export interface RowRef {
   row: string;
 }
 // our top level parsing function that takes care of creating a `Ctx`,
@@ -96,11 +96,11 @@ function cellRef(ctx: Context): Result<CellRef> {
   )(ctx);
 }
 
-function cellToCellRef(ctx: Context): Result<CellToCelRef> {
+function cellToCellRef(ctx: Context): Result<CellToCellRef> {
   //   console.log("cell to cell ref");
   return map(
     sequence<any>([cellRef, str(":"), cellRef]),
-    ([startCell, _colon, endCell]): CellToCelRef => ({
+    ([startCell, _colon, endCell]): CellToCellRef => ({
       startCell: startCell,
       endCell: endCell
     })

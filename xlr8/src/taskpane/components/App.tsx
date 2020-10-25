@@ -7,7 +7,8 @@ import Progress from "./Progress";
 import "../../../assets/icon-16.png";
 import "../../../assets/icon-32.png";
 import "../../../assets/icon-80.png";
-import { parse } from "../../domain/language";
+import { parse } from "../../domain/parser/language";
+import { consistentAchors } from "../../domain/checker/consistentAnchors";
 /* global Button, console, Excel, Header, HeroList, HeroListItem, Progress */
 
 export interface AppProps {
@@ -58,46 +59,18 @@ export default class App extends React.Component<AppProps, AppState> {
         range.load("formulas");
         await context.sync();
 
-        const formulae = [
-          //   "hello",
-          //   "123",
-          //   "=A9",
-          //   "=SUM(B6)",
-          //   "=A4:A7",
-          //   "=$B2",
-          //   "=B$2",
-          //   "=$B$2",
-          //   "=A:A",
-          //   "=SUM(A4:A7)",
-          //   "=SUM(A:B)",
-          //   "=IFERROR(B7, A3)",
-          //   '=IFERROR(B7,"asd")',
-          //   "=3+5",
-          //   "=C19/2",
-          //   "=C10/B7",
-          //   "=SUM(C10:C12)*2",
-          //   "=SUM(C10*5)",
-          //   "=IFERROR(SUM(C13),10/2)",
-          //   "IFERROR(SUM(C14),10/2)",
-          //   "=SUM(C11 *5)",
-          "=Sheet2!A1"
-        ];
-        for (let i = 0; i < formulae.length; i++) {
-          const formula = formulae[i];
-          const result = parse(formula);
-          console.log(JSON.stringify(result));
+        const formulas = range.formulas;
+        const parsedFormulae = formulas
+          .filter(f => f !== null)
+          .map(formula => formula as string[])
+          .filter(f => f !== null)
+          .map(f => parse(f[0]));
+
+        var checkers = [consistentAchors];
+        for (let i = 0; i < checkers.length; i++) {
+          var checker = checkers[i];
+          checker(parsedFormulae);
         }
-        //  const formulas = range.formulas;
-        //  for (let i = 0; i < formulas.length; i++) {
-        //    const formula = formulas[i];
-        //    if (formula === null) continue;
-        //    const f = formula as string[];
-        //    if (f === null) {console.log(f); continue;}
-        //    const firstFormula = f[0];
-        //    if (firstFormula === "") continue;
-
-        //  }
-
         // Update the fill color
         // range.format.fill.color = "green";
 

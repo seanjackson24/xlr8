@@ -16,6 +16,11 @@
   if there are now values below, extend the range down (with option to autoextend)
 - auto conversions
   convert VLOOKUP / INDEXMATCH to XLOOKUP
+  SUM(Jan!D5, Feb!D5) => Jan:Feb!D5
 - wrap in error checks
   check for DIV/0 and add an IFERR
 - auto date formatting
+
+export to file for git diffing?
+
+function - fetch??
